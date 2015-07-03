@@ -10,15 +10,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
-
-# =========================
-# Operating System Files
-# =========================
-
-# OSX
-# =========================
-
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
 .DS_Store
+
 .AppleDouble
 .LSOverride
 
@@ -57,3 +54,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+/build
+/captures
+
