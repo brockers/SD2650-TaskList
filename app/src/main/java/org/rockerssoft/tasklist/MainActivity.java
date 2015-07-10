@@ -10,6 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -25,27 +29,24 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         listView = (ListView)findViewById(R.id.lvListTask);
-        list = new ArrayList<String>();
+        readFromFile();
         listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
-
         listView.setAdapter(listAdapter);
-        list.add("Thing one");
-        list.add("Thing two");
-        list.add("Thing three");
 
         setupLongClickListener();
     }
 
     private void setupLongClickListener(){
         listView.setOnItemLongClickListener(
-           new AdapterView.OnItemLongClickListener(){
-               @Override
-               public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-                   list.remove(pos);
-                   listAdapter.notifyDataSetChanged();
-                   return true;
-               }
-           });
+                new AdapterView.OnItemLongClickListener() {
+                    @Override
+                    public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+                        list.remove(pos);
+                        listAdapter.notifyDataSetChanged();
+                        saveToFile();
+                        return true;
+                    }
+                });
     }
 
     public void onAddTask(View v){
@@ -53,6 +54,27 @@ public class MainActivity extends ActionBarActivity {
         String strNewTask = etNewTask.getText().toString();
         listAdapter.add(strNewTask);
         etNewTask.setText("");
+        saveToFile();
+    }
+
+    private void saveToFile(){
+        File fileDir = getFilesDir();
+        File todoFile = new File(fileDir, "tasklist.txt");
+        try {
+            FileUtils.writeLines(todoFile,list);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void readFromFile(){
+        File fileDir = getFilesDir();
+        File todoFile = new File(fileDir, "tasklist.txt");
+        try{
+            list = new ArrayList<String>(FileUtils.readLines(todoFile));
+        } catch(IOException e){
+            list = new ArrayList<String>();
+        }
     }
 
     @Override
